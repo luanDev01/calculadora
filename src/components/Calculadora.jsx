@@ -6,7 +6,7 @@ import { useState } from 'react'
 const Calculadora = () => {
 
   const numbers = ['1','2','3','4','5','6','7','8','9','0']
-  const operations = ['+','-','*','/']
+  const operations = ['+','-','*','/','%']
 
   const [currentValue, setCurrentValue] = useState('0')
   const [completeValue, setCompleteValue] = useState('')
@@ -21,6 +21,17 @@ const Calculadora = () => {
     setPendingValue('')
   }
 
+  const handleDelete = ()=>{
+    setCurrentValue(()=> {
+      if(currentValue.length == 1){
+        return '0'
+      }
+      return currentValue.slice(0,-1)
+    })
+
+    setCompleteValue(()=> completeValue.slice(0,-1))
+  }
+
   const handleClick = (num)=>
   {
     setCurrentValue((prevValue) => 
@@ -30,7 +41,7 @@ const Calculadora = () => {
       }
       return num
     })
-    setCompleteValue(()=> completeValue + num)
+    setCompleteValue((prevVal)=> prevVal + num)
   }
 
   const handleOperation = (operation)=> {
@@ -63,6 +74,8 @@ const Calculadora = () => {
         }
         result = num1 / num2
         break
+      case '%':
+        result = ((num1 * num2) / 100)
     }
     setCurrentValue(result.toString())
     setCompleteValue(result.toString())
@@ -73,7 +86,8 @@ const Calculadora = () => {
       <div className="complete-result">{completeValue}</div>
       <div className="display">{currentValue}</div>
       <div className="buttons">
-        <button onClick={()=> handleClear()}>AC</button>
+        <button className='clearBtn' onClick={()=> handleClear()}>AC</button>
+        <button onClick={()=> handleDelete()}>DEL</button>
         {numbers.map((num)=> (
           <button onClick={()=> handleClick(num)} key={num}>{num}</button>
         ))
@@ -82,7 +96,7 @@ const Calculadora = () => {
           <button onClick={()=> handleOperation(operation)} key={operation}>{operation}</button>
         ))
         }
-        <button onClick={()=> handleCalc()}>=</button>
+        <button className='calcBtn' onClick={()=> handleCalc()}>=</button>
       </div>
     </div>
   )
